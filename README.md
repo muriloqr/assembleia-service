@@ -42,7 +42,9 @@ sudo docker pull postgres
 ```
 sudo docker run -p 5432:5432 --name assembleias -e POSTGRES_USER=assembleias -e POSTGRES_PASSWORD=senhaassembleias -e POSTGRES_DB=assembleias -d postgres
 ```
+## Apos iniciar
 
+Apos iniciar, acesse http://localhost:8080/swagger-ui.html#/ para testar facilmente os endpoints.
 
 ## Como eu versionaria a API:
 
