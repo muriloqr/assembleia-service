@@ -6,11 +6,14 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.murilo.assembleia.dto.CPFValidatorDTO;
 import com.murilo.assembleia.dto.VotoDTO;
 import com.murilo.assembleia.entity.Pauta;
 import com.murilo.assembleia.entity.Sessao;
 import com.murilo.assembleia.entity.Voto;
+import com.murilo.assembleia.enums.StatusEnum;
 import com.murilo.assembleia.exception.BusinessException;
+import com.murilo.assembleia.feign.CPFValidatorFeignClient;
 import com.murilo.assembleia.repository.PautaRepository;
 import com.murilo.assembleia.repository.SessaoRepository;
 import com.murilo.assembleia.repository.VotoRepository;
@@ -23,6 +26,8 @@ public class VotoService {
 	private static final String VOTO_INVALIDO = "Voto inválido.";
 	private static final String VOTO_CONTABILIZADO = "Associado já votou.";
 	private static final String SESSAO_EXPIRADA = "Sessão de votação expirada.";
+	private static final String CPF_INVALIDO = "CPF inválido.";
+	private static final String CPF_NAO_PERMITIDO = "CPF não permitido para votar.";
 
 	@Autowired
 	private VotoRepository votoRepository;
@@ -33,9 +38,23 @@ public class VotoService {
 	@Autowired
 	private PautaRepository pautaRepository;
 	
+	@Autowired
+	private CPFValidatorFeignClient validatorClient;
+	
 	public Voto cadastrarVoto(Long pautaId, Long sessaoId, VotoDTO votoDTO) {
 		if (votoDTO == null || votoDTO.getVoto() == null || votoDTO.getCpf() == null) {
 			throw new BusinessException(VOTO_INVALIDO);
+		}
+		
+		try {
+			CPFValidatorDTO validator = validatorClient.validateCPF(votoDTO.getCpf());
+			
+			if (validator.getStatus().equals(StatusEnum.UNABLE_TO_VOTE)) {
+				throw new BusinessException(CPF_NAO_PERMITIDO);
+			}
+		} catch (Exception e) {
+			
+			throw new BusinessException(CPF_INVALIDO);
 		}
 		
 		Optional<Pauta> pauta = pautaRepository.findById(pautaId);
