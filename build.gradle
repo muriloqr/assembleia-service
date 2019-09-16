@@ -33,4 +33,7 @@ dependencies {
 	compile group: 'io.springfox', name: 'springfox-swagger-ui', version: '2.7.0'
 	runtime 'org.postgresql:postgresql:9.4-1206-jdbc42'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	testCompile group: 'org.springframework.boot', name: 'spring-boot-starter-test', version: '2.1.8.RELEASE'
+	testCompile group: 'org.mockito', name: 'mockito-core', version: '2.1.0'
+	
 }

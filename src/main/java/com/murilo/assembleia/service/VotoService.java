@@ -26,7 +26,7 @@ public class VotoService {
 	private static final String VOTO_INVALIDO = "Voto inválido.";
 	private static final String VOTO_CONTABILIZADO = "Associado já votou.";
 	private static final String SESSAO_EXPIRADA = "Sessão de votação expirada.";
-	private static final String CPF_INVALIDO = "CPF inválido.";
+	private static final String CPF_INVALIDO = "CPF inválido ou não permitido.";
 	private static final String CPF_NAO_PERMITIDO = "CPF não permitido para votar.";
 
 	@Autowired
