@@ -62,8 +62,8 @@ public class PautaService {
 		
 		ResultadoVotacaoDTO resultado = new ResultadoVotacaoDTO();
 		
-		resultado.setVotosSim(votoRepository.countByVoto(true));
-		resultado.setVotosSim(votoRepository.countByVoto(false));
+		resultado.setVotosSim(votoRepository.countByVotoAndSessao(true, sessao.get()));
+		resultado.setVotosNao(votoRepository.countByVotoAndSessao(false, sessao.get()));
 		resultado.setTotalVotos(votoRepository.countBySessao(sessao.get()));
 		resultado.setSessao(sessao.get());
 		

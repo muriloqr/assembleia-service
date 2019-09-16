@@ -13,7 +13,7 @@ public interface VotoRepository extends CrudRepository<Voto, Long>{
 	
 	public Optional<Voto> findByCpfAndSessao(String cpf, Sessao sessao);
 	
-	public Long countByVoto(Boolean voto);
+	public Long countByVotoAndSessao(Boolean voto, Sessao sessao);
 	
 	public Long countBySessao(Sessao sessao);
 }
