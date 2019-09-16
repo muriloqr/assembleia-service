@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 
 import com.murilo.assembleia.dto.ResultadoVotacaoDTO;
@@ -20,6 +21,7 @@ public class PautaService {
 	private static final String PAUTA_NAO_ENCONTRADA = "Pauta não encontrada.";
 	private static final String SESSAO_NAO_ENCONTRADA = "Sessão não encontrada.";
 	private static final String SESSAO_EM_ANDAMENTO = "A sessão de votação está em andamento.";
+	private static final String TOPICO_KAFKA = "assembleia";
 	
 	@Autowired
 	private PautaRepository pautaRepository;
@@ -29,6 +31,13 @@ public class PautaService {
 	
 	@Autowired
 	private VotoRepository votoRepository;
+	
+	@Autowired
+	private KafkaTemplate<String, ResultadoVotacaoDTO> kafkaTemplate;
+	 
+	public void sendKafkaMessage(ResultadoVotacaoDTO resultado) {
+	    kafkaTemplate.send(TOPICO_KAFKA, resultado);
+	}
 	
 	public Pauta cadastrarPauta(Pauta pauta) {
 		return this.pautaRepository.save(pauta);
@@ -57,6 +66,8 @@ public class PautaService {
 		resultado.setVotosSim(votoRepository.countByVoto(false));
 		resultado.setTotalVotos(votoRepository.countBySessao(sessao.get()));
 		resultado.setSessao(sessao.get());
+		
+		sendKafkaMessage(resultado);
 		
 		return resultado;
 	}
